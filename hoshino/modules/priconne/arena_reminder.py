@@ -1,10 +1,11 @@
 from hoshino.service import Service
+from hoshino import R
 
 svtw = Service('pcr-arena-reminder-tw', enable_on_default=False, help_='背刺时间提醒（台B）', bundle='pcr订阅')
 svjp = Service('pcr-arena-reminder-jp', enable_on_default=False, help_='背刺时间提醒（日）', bundle='pcr订阅')
-msg = '骑士君、准备好背刺了吗？'
+msg = f'骑士君、准备好背刺了吗？\n{R.img("beichi.jpg").cqcode}'
 
-@svtw.scheduled_job('cron', hour='14', minute='45')
+@svtw.scheduled_job('cron', hour='14', minute='50')
 async def pcr_reminder_tw():
     await svtw.broadcast(msg, 'pcr-reminder-tw', 0.2)
 

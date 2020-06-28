@@ -8,7 +8,8 @@ p2 = R.img('priconne/quick/r16-4-tw-1.png').cqcode
 p4 = R.img('priconne/quick/r17-3-jp-1.png').cqcode
 p5 = R.img('priconne/quick/r17-3-jp-2.png').cqcode
 p6 = R.img('priconne/quick/r17-3-jp-3.png').cqcode
-p7 = R.img('priconne/quick/r8-3.jpg').cqcode
+p7 = R.img('priconne/quick/r9-3-1.jpg').cqcode
+p8 = R.img('priconne/quick/r9-3-2.png').cqcode
 
 @sv.on_rex(r'^(\*?([日台国陆b])服?([前中后]*)卫?)?rank(表|推荐|指南)?$')
 async def rank_sheet(bot, ev):
@@ -38,12 +39,12 @@ async def rank_sheet(bot, ev):
         await bot.send(ev, '\n'.join(msg), at_sender=True)
         await util.silence(ev, 60)
     elif is_cn:
-        await bot.send(ev, '\n※B服当前仅开放至金装，r10前无需考虑卡rank\n※暂未发现公开的靠谱rank推荐表\n※装备强化消耗较多mana，如非前排建议不强化\n※关于卡r的原因可发送"bcr速查"研读【为何卡R卡星】一帖', at_sender=True)
+        await bot.send(ev, f'{p7}{p8}\n※B服当前仅开放至金装，r10前无需考虑卡rank\n※暂未发现公开的靠谱rank推荐表\n※装备强化消耗较多mana，如非前排建议不强化\n※关于卡r的原因可发送"bcr速查"研读【为何卡R卡星】一帖', at_sender=True)
         # await bot.send(ev, str(p7))
         # await util.silence(ev, 60)
 
 
-@sv.on_fullmatch(('jjc', 'JJC', 'JJC作业', 'JJC作业网', 'JJC数据库', 'jjc作业', 'jjc作业网', 'jjc数据库', 'JJC作業', 'JJC作業網', 'JJC數據庫', 'jjc作業', 'jjc作業網', 'jjc數據庫'))
+@sv.on_fullmatch(( 'JJC作业', 'JJC作业网', 'JJC数据库', 'jjc作业', 'jjc作业网', 'jjc数据库', 'JJC作業', 'JJC作業網', 'JJC數據庫', 'jjc作業', 'jjc作業網', 'jjc數據庫'))
 async def say_arina_database(bot, ev):
     await bot.send(ev, '公主连接Re:Dive 竞技场编成数据库\n日文：https://nomae.net/arenadb \n中文：https://pcrdfans.com/battle')
 
@@ -84,11 +85,11 @@ BCR_SITES = f'''
 @sv.on_fullmatch(('pcr速查', 'pcr图书馆', 'pcr圖書館', '图书馆', '圖書館'))
 async def pcr_sites(bot, ev: CQEvent):
     await bot.send(ev, PCR_SITES, at_sender=True)
-    await util.silence(ev, 60)
+    #await util.silence(ev, 60)
 @sv.on_fullmatch(('bcr速查', 'bcr攻略'))
 async def bcr_sites(bot, ev: CQEvent):
     await bot.send(ev, BCR_SITES, at_sender=True)
-    await util.silence(ev, 60)
+    #await util.silence(ev, 60)
 
 
 YUKARI_SHEET_ALIAS = map(lambda x: ''.join(x), itertools.product(('黄骑', '酒鬼', '黃騎'), ('充电', '充电表', '充能', '充能表')))
@@ -102,8 +103,17 @@ YUKARI_SHEET = f'''
 @sv.on_fullmatch(YUKARI_SHEET_ALIAS)
 async def yukari_sheet(bot, ev):
     await bot.send(ev, YUKARI_SHEET, at_sender=True)
-    await util.silence(ev, 60)
+    #await util.silence(ev, 60)
 
+POSITION_SHEET_ALIAS = map(lambda x: ''.join(x), itertools.product(('BCR', 'PCR', 'bcr', 'pcr', '角色', ''), ('站位', '站位图')))
+POSITION_SHEET = f'''
+{R.img('priconne/quick/position.jpg').cqcode}
+※Y轴仅为排序，非角色高低站位
+※图片搬运自pcredivewiki_tw'''
+@sv.on_fullmatch(POSITION_SHEET_ALIAS)
+async def position_sheet(bot, ev):
+    await bot.send(POSITION_SHEET, at_sender=True)
+    #await util.silence(ev, 60)
 
 DRAGON_TOOL = f'''
 拼音对照表：{R.img('priconne/KyaruMiniGame/注音文字.jpg').cqcode}{R.img('priconne/KyaruMiniGame/接龙.jpg').cqcode}
@@ -113,4 +123,4 @@ DRAGON_TOOL = f'''
 @sv.on_fullmatch(('一个顶俩', '拼音接龙', '韵母接龙'))
 async def dragon(bot, ev):
     await bot.send(ev, DRAGON_TOOL, at_sender=True)
-    await util.silence(ev, 60)
+    #await util.silence(ev, 60)

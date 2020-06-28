@@ -20,8 +20,8 @@ from . import arena
 
 lmt = FreqLimiter(5)
 
-aliases = ('怎么拆', '怎么解', '怎么打', '如何拆', '如何解', '如何打', '怎麼拆', '怎麼解', '怎麼打', 'jjc查询', 'jjc查詢')
-aliases_b = tuple('b' + a for a in aliases) + tuple('B' + a for a in aliases)
+aliases = ('怎么拆', '怎么解', '怎么打', '如何拆', '如何解', '如何打', '怎麼拆', '怎麼解', '怎麼打', 'jjc查询', 'jjc查詢', 'c国服')
+aliases_b = tuple('b' + a for a in aliases) + tuple('B' + a for a in aliases) + tuple('jj' + a for a in aliases)
 aliases_tw = tuple('台' + a for a in aliases)
 aliases_jp = tuple('日' + a for a in aliases)
 
@@ -48,7 +48,7 @@ async def _arena_query(bot, ev: CQEvent, region: int):
     uid = ev.user_id
 
     if not lmt.check(uid):
-        await bot.finish(ev, '您查询得过于频繁，请稍等片刻', at_sender=True)
+        await bot.finish(ev, '查询过于频繁，抄作业别那么急嘛', at_sender=True)
     lmt.start_cd(uid)
 
     # 处理输入数据
@@ -60,7 +60,7 @@ async def _arena_query(bot, ev: CQEvent, region: int):
         _, name, score = chara.guess_id(unknown)
         if score < 70 and not defen:
             return  # 忽略无关对话
-        msg = f'无法识别"{unknown}"' if score < 70 else f'无法识别"{unknown}" 您说的有{score}%可能是{name}'
+        msg = f'不认识"{unknown}"诶' if score < 70 else f'不认识"{unknown}"诶，您说的有{score}%可能是{name}'
         await bot.finish(ev, msg)
     if not defen:
         await bot.finish(ev, '查询请发送"怎么拆+防守队伍"，无需+号', at_sender=True)
