@@ -51,14 +51,6 @@ def dump_pool_config():
         json.dump(_group_pool, f, ensure_ascii=False)
 
 
-gacha_10_aliases = ('抽十连', '十连', '十连！', '十连抽', '来个十连', '来发十连', '来次十连', '抽个十连', '抽发十连', '抽次十连', '十连扭蛋', '扭蛋十连',
-                    '10连', '10连！', '10连抽', '来个10连', '来发10连', '来次10连', '抽个10连', '抽发10连', '抽次10连', '10连扭蛋', '扭蛋10连',
-                    '十連', '十連！', '十連抽', '來個十連', '來發十連', '來次十連', '抽個十連', '抽發十連', '抽次十連', '十連轉蛋', '轉蛋十連',
-                    '10連', '10連！', '10連抽', '來個10連', '來發10連', '來次10連', '抽個10連', '抽發10連', '抽次10連', '10連轉蛋', '轉蛋10連')
-gacha_1_aliases = ('单抽', '单抽！', '来发单抽', '来个单抽', '来次单抽', '扭蛋单抽', '单抽扭蛋',
-                   '單抽', '單抽！', '來發單抽', '來個單抽', '來次單抽', '轉蛋單抽', '單抽轉蛋')
-gacha_300_aliases = ('抽一井', '来一井', '来发井', '抽发井', '天井扭蛋', '扭蛋天井', '天井轉蛋', '轉蛋天井')
-
 @sv.on_fullmatch(('卡池资讯', '查看卡池', '看看卡池', '康康卡池', '卡池資訊', '看看up', '看看UP'))
 async def gacha_info(bot, ev: CQEvent):
     gid = str(ev.group_id)
@@ -98,79 +90,71 @@ async def set_pool(bot, ev: CQEvent):
     await gacha_info(bot, ev)
 
 
-async def check_jewel_num(session):
-    uid = session.ctx['user_id']
-    if not jewel_limit.check(uid):
-        await session.send(f'别抽力别抽力，您今天已经抽完钻了，欢迎明早5点后再来！', at_sender=True)
-        if not jewel_limit.check(uid):
-            await session.finish(JEWEL_EXCEED_NOTICE)
+async def check_jewel_num(bot, ev: CQEvent):
+    if not jewel_limit.check(ev.user_id):
+        await bot.finish(ev, JEWEL_EXCEED_NOTICE, at_sender=True)
 
 
-async def check_limit_num(session):
-    uid = session.ctx['user_id']
-    if lmtw.check(uid):
-        await session.send(f'可以发凯露抽签来额外获取宝石哦', at_sender=True)
-        if not lmtw.check(uid):
+async def check_limit_num(bot, ev: CQEvent):
+    if lmtw.check(ev.user_id):
+        await bot.send(ev, f'可以发凯露抽签来额外获取宝石哦', at_sender=True)
+        if not lmtw.check(ev.user_id):
             pass
 
 
-async def check_tenjo_num(session):
-    uid = session.ctx['user_id']
-    if not tenjo_limit.check(uid):
-        await session.send(TENJO_EXCEED_NOTICE, at_sender=True)
-        if not tenjo_limit.check(uid):
-            await session.finish(TENJO_EXCEED_NOTICE)
+async def check_tenjo_num(bot, ev: CQEvent):
+    if not tenjo_limit.check(ev.user_id):
+        await bot.finish(ev, TENJO_EXCEED_NOTICE, at_sender=True)
 
 
-@sv.on_natural_language(keywords={'臭鼬', '猫猫', '凯露'}, only_to_me=False)
-async def gacha_st(session:NLPSession):
+@sv.on_rex(r'.*(宝石|石头).*')
+async def gacha_st(bot, ev: CQEvent):
 
-    arg = session.msg_text.strip()
-    rex = re.compile(r'.*(宝石|石头|钻|水).*')
+    arg = str(ev.plain_text)
+    rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
-        uid = session.ctx['user_id']
-        num = jewel_limit.get_num(uid)
-        await session.send(f'现在有{4500 - num}宝石')
+        num = jewel_limit.get_num(ev.user_id)
+        await bot.send(ev, f'现在有{4500 - num}宝石', at_sender=False)
 
 
-@sv.on_natural_language(keywords={'臭鼬', '猫猫', '凯露'}, only_to_me=False)
-async def gacha_d(session:NLPSession):
+@sv.on_rex(r'.*抽签.*')
+async def gacha_d(bot, ev: CQEvent):
 
-    arg = session.msg_text.strip()
-    rex = re.compile(r'.*抽签.*')
+    arg = str(ev.plain_text)
+    rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
-        await check_jewel_num(session)
-        uid = session.ctx['user_id']
+        await check_jewel_num(bot, ev)
+        uid = ev.user_id
         num = jewel_limit.get_num(uid)
         if not lmtw.check(uid):
-                await session.send(f'你今天已经抽过签了，现在有{4500 - num}宝石')
+                await bot.send(ev, f'你今天已经抽过签了，现在有{4500 - num}宝石')
                 return
         lmtw.increase(uid)
         if random.random() <= 0.9:
             add_jewel = random.randrange(150,4500,150)
             jewel_limit.decrease(uid, add_jewel)
-            await session.send(f'奇怪的宝石增加了！\n获得{add_jewel}宝石')
+            await bot.send(ev, f'奇怪的宝石增加了！\n获得{add_jewel}宝石')
         else:
             jewel_limit.increase(uid, 4350)
-            await session.send('宝石被猫猫偷走了 >_< 就↗剩↘150宝石了')
+            await bot.send(ev, f'宝石被猫猫偷走了 >_< 就↗剩↘150宝石了')
 
 
-@sv.on_natural_language(keywords={'臭鼬', '猫猫', '凯露'}, only_to_me=False)
-async def gacha_1(session:NLPSession):
+@sv.on_rex(r'^(?!.*(十|10|井)).*(来|抽).*(一|1).*(发|抽)|.*单.*(发|抽)')
+async def gacha_1(bot, ev: CQEvent):
 
-    arg = session.msg_text.strip()
-    rex = re.compile(r'^(?!.*(十|10|井)).*(来|抽).*(一|1).*(发|抽)|.*单.*(发|抽)')
+    arg = str(ev.plain_text)
+    rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
-        await check_limit_num(session)
+        await check_limit_num(bot, ev)
     if m:
-        await check_jewel_num(session)
-        uid = session.ctx['user_id']
+        await check_jewel_num(bot, ev)
+        uid = ev.user_id
         jewel_limit.increase(uid, 150)
 
-        gid = str(session.ctx['group_id'])
+        gid = str(ev.group_id)
         gacha = Gacha(_group_pool[gid])
         chara, hiishi = gacha.gacha_one(gacha.up_prob, gacha.s3_prob, gacha.s2_prob)
         silence_time = hiishi * 60
@@ -180,25 +164,25 @@ async def gacha_1(session:NLPSession):
             res = f'{chara.icon.cqcode} {res}'
 
         #await silence(session.ctx, silence_time)
-        await session.send(f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
+        await bot.send(ev, f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
 
 
-@sv.on_natural_language(keywords={'臭鼬', '猫猫', '凯露'}, only_to_me=False)
-async def gacha_10(session:NLPSession):
+@sv.on_rex(r'.*(十|10)(次|发|抽|连|下|連).*')
+async def gacha_10(bot, ev: CQEvent):
 
-    arg = session.msg_text.strip()
-    rex = re.compile(r'.*(十|10)(次|发|抽|连|下|連).*')
+    arg = str(ev.plain_text)
+    rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
-        await check_limit_num(session)
+        await check_limit_num(bot, ev)
     if m:
         SUPER_LUCKY_LINE = 170
 
-        await check_jewel_num(session)
-        uid = session.ctx['user_id']
+        await check_jewel_num(bot, ev)
+        uid = ev.user_id
         jewel_limit.increase(uid, 1500)
 
-        gid = str(session.ctx['group_id'])
+        gid = str(ev.group_id)
         gacha = Gacha(_group_pool[gid])
         result, hiishi = gacha.gacha_ten()
         silence_time = hiishi * 0 if hiishi < SUPER_LUCKY_LINE else hiishi * 6
@@ -220,24 +204,24 @@ async def gacha_10(session:NLPSession):
             res = f'{res1}\n{res2}'
 
         if hiishi >= SUPER_LUCKY_LINE:
-            await session.send('恭喜海豹！おめでとうございます！')
-        await session.send(f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
-        await silence(session.ctx, silence_time)
+            await bot.send(ev, '恭喜海豹！おめでとうございます！')
+        await bot.send(ev, f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
+        await silence(ev, silence_time)
 
 
 
-@sv.on_natural_language(keywords={'井'}, only_to_me=False)
-async def gacha_300(session:CommandSession):
+@sv.on_rex(r'.*(来|抽).*井.*')
+async def gacha_300(bot, ev: CQEvent):
 
-    arg = session.msg_text.strip()
-    rex = re.compile(r'(.*(臭鼬|猫猫|凯露).*(来|抽|扭蛋|轉蛋).*)|(.*(来|抽|扭蛋|轉蛋).*(臭鼬|猫猫|凯露).*)')
+    arg = str(ev.plain_text)
+    rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
-        await check_tenjo_num(session)
-        uid = session.ctx['user_id']
+        await check_tenjo_num(bot, ev)
+        uid = ev.user_id
         tenjo_limit.increase(uid)
 
-        gid = str(session.ctx['group_id'])
+        gid = str(ev.group_id)
         gacha = Gacha(_group_pool[gid])
         result = gacha.gacha_tenjou()
         up = len(result['up'])
@@ -292,11 +276,11 @@ async def gacha_300(session:CommandSession):
         msg.append(SWITCH_POOL_TIP)
 
         if uid == 3106316068:
-            await session.send('emmmm由衣今天又偷懒了啊~', at_sender=False)
+            await bot.send(ev, 'emmmm由衣今天又偷懒了啊~', at_sender=False)
 
-        await session.send('\n'.join(msg), at_sender=True)
+        await bot.send(ev, '\n'.join(msg), at_sender=True)
         silence_time = (10*up + s2)
-        await silence(session.ctx, silence_time)
+        await silence(ev, silence_time)
 
 
 
