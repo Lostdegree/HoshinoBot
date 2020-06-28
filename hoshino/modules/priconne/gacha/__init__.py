@@ -23,6 +23,7 @@ sv_help = '''
 [凯露抽签] 随机获得/减少宝石
 [凯露宝石] 查看剩余宝石
 [查看卡池] 模拟卡池&出率
+[切换卡池] 更换模拟卡池
 ※宝石用于限制每日单抽/十连模拟的次数
 '''.strip()
 sv = Service('gacha', help_=sv_help, bundle='pcr娱乐')
@@ -70,7 +71,7 @@ async def gacha_info(bot, ev: CQEvent):
     await bot.send(ev, f"本期卡池主打的角色：\n{up_chara}\nUP角色合计={(gacha.up_prob/10):.1f}% 3★出率={(gacha.s3_prob)/10:.1f}%\n{SWITCH_POOL_TIP}")
 
 
-POOL_NAME_TIP = '请选择以下卡池\n> 选择卡池 jp\n> 选择卡池 tw\n> 选择卡池 bilibili\n> 选择卡池 mix'
+POOL_NAME_TIP = '请选择以下卡池\n> 选择卡池jp\n> 选择卡池tw\n> 选择卡池bilibili\n> 选择卡池mix'
 @sv.on_prefix(('切换卡池', '选择卡池', '切換卡池', '選擇卡池'))
 async def set_pool(bot, ev: CQEvent):
     if not priv.check_priv(ev, priv.ADMIN):

@@ -15,7 +15,7 @@ async def say_hello(session):
 
 
 # ============================================================== #
-sv = Service('chat', manage_priv=priv.SUPERUSER, visible=False)
+sv = Service('chat', visible=False)
 # ============================================================== #
 
 waifu_word = ('真 是 可 爱 呢', R.img(f'laopo1.jpg').cqcode, R.img(f'laopo2.jpg').cqcode, R.img(f'laopo3.jpg').cqcode)
