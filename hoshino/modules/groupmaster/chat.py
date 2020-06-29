@@ -2,10 +2,10 @@ import re
 
 import random
 
-from nonebot import on_command, on_natural_language, NLPSession
+from nonebot import on_command
 
 from hoshino import R, Service, priv, util
-
+from hoshino.typing import *
 
 # basic function for debug, not included in Service('chat')
 @on_command('zai?', aliases=('在?', '在？', '在吗', '在么？', '在嘛', '在嘛？'), only_to_me=True)
@@ -40,59 +40,59 @@ async def say_sorry(bot, ev):
     await bot.send(ev, 'ごめんなさい！嘤嘤嘤(〒︿〒)')
 
 
-@sv.on_natural_language(keywords={'老婆', 'waifu', 'laopo', '宝贝', '亲爱的'}, only_to_me=False)
-async def chat_waifu(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*(老婆|waifu|laopo|宝贝|亲爱的).*')
+async def chat_waifu(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        if not priv.check_priv(session.ctx, priv.SUPERUSER):
-            await session.send(random.choice(waifu_word))
+        if not priv.check_priv(ev, priv.SUPERUSER):
+            await bot.send(ev, random.choice(waifu_word))
         else:
-            await session.send('mua~')
+            await bot.send(ev, 'mua~')
 
-@sv.on_natural_language(keywords={'么么哒', '么么'}, only_to_me=False)
-async def chat_memeda(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*(么么哒|么么).*')
+async def chat_memeda(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        if not priv.check_priv(session.ctx, priv.ADMIN):
-            await session.send(random.choice(nmeme_word))
+        if not priv.check_priv(ev, priv.ADMIN):
+            await bot.send(ev, random.choice(nmeme_word))
         else:
-            await session.send(random.choice(meme_word))
+            await bot.send(ev, random.choice(meme_word))
 
-@sv.on_natural_language(keywords={'爱你', '爱你哟', '我爱你', '喜欢你'}, only_to_me=False)
-async def aini(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*(爱你|喜欢你).*')
+async def aini(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send(random.choice(AI_WORD), at_sender=True)
+        await bot.send(ev, random.choice(AI_WORD), at_sender=True)
 
-@sv.on_natural_language(keywords={'老公'}, only_to_me=False)
-async def chat_laogong(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*老公.*')
+async def chat_laogong(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send(random.choice(laogong_word), at_sender=True)
+        await bot.send(ev, random.choice(laogong_word), at_sender=True)
 
-@sv.on_natural_language(keywords={'笨蛋'}, only_to_me=False)
-async def chat_bendan(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*笨蛋.*')
+async def chat_bendan(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send('emmm...キャル觉得你也是笨比', at_sender=True)
+        await bot.send(ev, 'emmm...キャル觉得你也是笨比', at_sender=True)
 
-@sv.on_natural_language(keywords={'mua'}, only_to_me=False)
-async def chat_mua(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*mua.*')
+async def chat_mua(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send('笨蛋~', at_sender=True)
+        await bot.send(ev, '笨蛋~', at_sender=True)
 
 
 @sv.on_fullmatch(('我有个朋友说他好了', '我朋友说他好了', ))
@@ -107,13 +107,13 @@ async def nihaole(bot, ev):
         await bot.send(ev, '不许好，憋回去！')
     #await util.silence(ev, 30)
 
-@sv.on_natural_language(keywords={'good night', 'Good night', '晚安', '安安'}, only_to_me=False)
-async def gnight(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*(od night|晚安|安安).*')
+async def gnight(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send('安安~キャル现在还要工作不能睡。。。\n为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么不让我睡啊啊啊啊啊啊啊啊啊', at_sender=True)
+        await bot.send(ev, '安安~キャル现在还要工作不能睡。。。\n为什么为什么为什么为什么为什么为什么为什么为什么为什么为什么不让我睡啊啊啊啊啊啊啊啊啊', at_sender=True)
 
 # ==================================================== #
 
@@ -134,27 +134,27 @@ nyb_player = f'''{R.img('nyb.gif').cqcode}
 # ==================================================== #
 
 @sv.on_keyword(('来点'))
-async def laidian(bot, ctx):
+async def laidian(bot, ev):
     if random.random() < 0.20:
-        await bot.send(ctx, '？自己动')
+        await bot.send(ev, '？自己动')
 
 
 @sv.on_keyword(('确实', '有一说一', 'u1s1', 'yysy', 'y1s1', 'qs'))
-async def chat_queshi(bot, ctx):
+async def chat_queshi(bot, ev):
     if random.random() < 0.05:
-        await bot.send(ctx, random.choice(queshi_word))
+        await bot.send(ev, random.choice(queshi_word))
 
 
 @sv.on_keyword(('会战'))
-async def chat_clanba(bot, ctx):
+async def chat_clanba(bot, ev):
     if random.random() < 0.03:
-        await bot.send(ctx, random.choice(clanba_word))
+        await bot.send(ev, random.choice(clanba_word))
 
 
 @sv.on_keyword(('内鬼'))
-async def chat_neigui(bot, ctx):
+async def chat_neigui(bot, ev):
     if random.random() < 0.10:
-        await bot.send(ctx, random.choice(neigui_word))
+        await bot.send(ev, random.choice(neigui_word))
 
 
 @sv.on_keyword(('春黑', '新黑', '唯一神'))
@@ -164,21 +164,21 @@ async def new_year_burst(bot, ev):
 
 
 @sv.on_keyword(('nb', '牛逼', '牛B', 'yyds', '🐮🍺'))
-async def chat_niu(bot, ctx):
+async def chat_niu(bot, ev):
     if random.random() < 0.10:
-        await bot.send(ctx, random.choice(niu_word))
+        await bot.send(ev, random.choice(niu_word))
 
 
 @sv.on_keyword(('good night', '晚安', '安安'))
-async def chat_gnight(bot, ctx):
+async def chat_gnight(bot, ev):
     if random.random() < 0.20:
-        await bot.send(ctx, f'\n都要早点睡哦~\n{R.img("dao2.jpg").cqcode}')
+        await bot.send(ev, f'\n都要早点睡哦~\n{R.img("dao2.jpg").cqcode}')
 
 
 @sv.on_keyword(('啊这'))
-async def chat_az(bot, ctx):
+async def chat_az(bot, ev):
     if random.random() < 0.05:
-        await bot.send(ctx, f'{R.img("az.jpg").cqcode}')
+        await bot.send(ev, f'{R.img("az.jpg").cqcode}')
 
 
 # ================================================== #
@@ -199,103 +199,103 @@ me_word = (f'宁真是老hentai了啊\n{R.img("me.jpg").cqcode}', R.img(f'maomao
 
 # ================================================== #
 
-@sv.on_natural_language(keywords={'zai', '在', 'z'}, only_to_me=False)
-async def n_zai(session:NLPSession):
-    arg = session.msg_text.strip()
-    rex = re.compile(r'(.*)kkp(.*)')
-    rexs = re.compile(r'臭鼬|凯露|猫猫')
-    m = rex.search(arg)
-    ms = rexs.search(arg)
-    if m and ms:
-        await session.send('再嘴臭キャル请你吃套餐嗷', at_sender=True)
-    elif not m and ms:
-        await session.send('在在在，キャル很忙的嗷', at_sender=True)
+#@sv.on_rex(r'.*(zai|在|z?|z？).*')
+#async def n_zai(bot, ev: CQEvent):
+#    arg = str(ev.raw_message)
+#    rex = re.compile(r'(.*)kkp(.*)')
+#    rexs = re.compile(r'臭鼬|凯露|猫猫')
+#    m = rex.search(arg)
+#    ms = rexs.search(arg)
+#    if m and ms:
+#        await bot.send(ev, '再嘴臭キャル请你吃套餐嗷', at_sender=True)
+#    elif not m and ms:
+#        await bot.send(ev, '在在在，キャル很忙的嗷', at_sender=True)
 	
-@sv.on_natural_language(keywords={'嗦'}, only_to_me=True)
-async def n_suo(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*嗦.*')
+async def n_suo(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rex = re.compile(r'(.*)(牛|🐮)(.*)')
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     m = rex.search(arg)
     ms = rexs.search(arg)
     if m and ms:
-        await session.send('不嗦，好臭好噁！', at_sender=True)
+        await bot.send(ev, '不嗦，好臭好噁！', at_sender=True)
 	
-@sv.on_natural_language(keywords={'爸'}, only_to_me=False)
-async def n_ba(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*爸.*')
+async def n_ba(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send('连爸都叫，这是我没想到的', at_sender=True)
+        await bot.send(ev, '连爸都叫，这是我没想到的', at_sender=True)
 	
-@sv.on_natural_language(keywords={'不'}, only_to_me=False)
-async def n_bu(session:NLPSession):
-    arg = session.msg_text.strip()
+@sv.on_rex(r'.*不.*')
+async def n_bu(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
     rex = re.compile(r'(.*)我(.*)')
     rexs = re.compile(r'臭鼬|凯露|猫猫')
     m = rex.search(arg)
     ms = rexs.search(arg)
     if ms:
         if m and random.random() < 0.2:
-            await session.send('不准不！', at_sender=True)
+            await bot.send(ev, '不准不！', at_sender=True)
         elif not m and random.random() < 0.1:
-            await session.send('天天不不不，让你去真不王国好了（', at_sender=True)
+            await bot.send(ev, '天天不不不，让你去真不王国好了（', at_sender=True)
 	
-@sv.on_natural_language(keywords={'催刀'}, only_to_me=False)
-async def n_suo(session:NLPSession):
-    arg = session.msg_text.strip()
-    rex = re.compile(r'(.*)(无效|不许|不准)(.*)')
+@sv.on_rex(r'.*催刀.*')
+async def n_suo(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rex = re.compile(r'.*(无效|不许|不准).*')
     m = rex.search(arg)
     if m:
-        await session.send('会长，这人看来想要套餐了~', at_sender=False)
+        await bot.send(ev, '会长，这人看来想要套餐了~', at_sender=False)
     elif not m and random.random() < 0.2:
-        await session.send('多催催，多打打，会长也能早放假', at_sender=False)
+        await bot.send(ev, '多催催，多打打，会长也能早放假', at_sender=False)
 	
-@sv.on_natural_language(keywords={'工具人'}, only_to_me=False)
-async def n_gjr(session:NLPSession):
-    arg = session.msg_text.strip()
-    rexs = re.compile(r'.*(臭鼬|凯露|猫猫).*')
+@sv.on_rex(r'.*工具人.*')
+async def n_gjr(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send('那。。。宁来统计出刀怎么样？', at_sender=True)
+        await bot.send(ev, '那。。。宁来统计出刀怎么样？', at_sender=True)
 	
-@sv.on_natural_language(keywords={'臭鼬'}, only_to_me=False)
-async def n_cy(session:NLPSession):
+@sv.on_rex(r'.*臭鼬.*')
+async def n_cy(bot, ev: CQEvent):
     if random.random() < 0.1:
-        await session.send(random.choice(cy_word), at_sender=True)
+        await bot.send(ev, random.choice(cy_word), at_sender=True)
 	
-@sv.on_natural_language(keywords={'亲亲', '啾啾', '对不起'}, only_to_me=False)
-async def n_qq(session:NLPSession):
-    arg = session.msg_text.strip()
-    rexs = re.compile(r'.*(臭鼬|凯露|猫猫).*')
+@sv.on_rex(r'.*(亲亲|啾啾|对不起).*')
+async def n_qq(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        await session.send(random.choice(qq_word), at_sender=True)
+        await bot.send(ev, random.choice(qq_word), at_sender=True)
 	
-@sv.on_natural_language(keywords={'nb', '牛逼', '牛B', '牛b', 'tql', 'wsl', 'awsl', 'yyds', '永远滴神','可爱', '🐮🍺'}, only_to_me=False)
-async def n_praise(session:NLPSession):
-    arg = session.msg_text.strip()
-    rexs = re.compile(r'.*(臭鼬|凯露|猫猫).*')
+@sv.on_rex(r'.*(nb|牛逼|牛B|牛b|tql|wsl|yyds|永远滴神|可爱|🐮🍺).*')
+async def n_praise(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|猫猫')
     rex = re.compile(r'^(?!.*不).*')
     ms = rexs.search(arg)
     m = rex.search(arg)
     if ms and m:
         if random.random() < 0.95:
-            await session.send(random.choice(shy_word), at_sender=True)
+            await bot.send(ev, random.choice(shy_word), at_sender=True)
 	
-@sv.on_natural_language(keywords={'春田'}, only_to_me=True)
-async def chat_ue(session):
-    arg = session.msg_text.strip()
+@sv.on_keyword(('春田'), only_to_me=True)
+async def chat_ue(bot, ev):
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*井.*')
     m = rex.search(arg)
     if m:
-        await session.send(random.choice(ue_word), at_sender=True)
+        await bot.send(ev, random.choice(ue_word), at_sender=True)
 	
-@sv.on_natural_language(keywords={'摸'}, only_to_me=False)
-async def n_mt(session:NLPSession):
-    arg = session.msg_text.strip()
-    rexs = re.compile(r'.*(臭鼬|凯露|猫猫).*')
+@sv.on_rex(r'.*摸.*')
+async def n_mt(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|猫猫')
     rexa = re.compile(r'.*头.*')
     rexb = re.compile(r'.*尾.*')
     rexc = re.compile(r'.*耳.*')
@@ -305,11 +305,11 @@ async def n_mt(session:NLPSession):
     mc = rexc.search(arg)
     if ms:
         if ma:
-            await session.send(random.choice(mt_word), at_sender=True)
+            await bot.send(ev, random.choice(mt_word), at_sender=True)
         elif mb:
-            await session.send(random.choice(mw_word), at_sender=True)
+            await bot.send(ev, random.choice(mw_word), at_sender=True)
         elif mc:
-            await session.send(random.choice(me_word), at_sender=True)
+            await bot.send(ev, random.choice(me_word), at_sender=True)
         else:
             return
 

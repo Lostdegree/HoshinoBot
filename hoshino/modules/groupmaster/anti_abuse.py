@@ -5,12 +5,12 @@ import random
 from datetime import timedelta
 
 import nonebot
-from nonebot import on_natural_language, NLPSession
 from nonebot import Message, MessageSegment, message_preprocessor, on_command
 from nonebot.message import _check_calling_me_nickname
 
 import hoshino
 from hoshino import R, Service, util, priv
+from hoshino.typing import *
 
 '''
 from nonebot.command import CommandManager
@@ -62,7 +62,7 @@ async def hb_handler(ctx):
 
 '''
 # ============================================ #
-
+sv = Service('anti_abuse', visible=False)
 
 REBEAT_WORD = (
     'rbq', 'RBQ', '憨批', '废物', '死妈', '崽种', '傻逼', '傻逼玩意', 
@@ -86,42 +86,40 @@ REBEAT_WORD = (
 
 JIAN_WORD = ('宁有剑吗？', f'哦，那💉💧🐮🍺\n{R.img("jian.jpg").cqcode}')
 
-@on_natural_language(keywords={'臭鼬', '凯露', '猫猫'}, only_to_me=False)
-async def ban_word(session:NLPSession):
-    arg = session.msg_text.strip()
-    rex = re.compile(r'.*rbq|RBQ|憨批|废物|死妈|崽种|傻逼|没用东西|傻B|傻b|SB|sb|煞笔|nm|爬|爪巴|kkp|dm|D区|口区|你爹|弱智|NM|你妈|清明|🐎|🐴|傻子|奥利给|奥力给|💩|nt|NT.*')
+@sv.on_rex(r'.*(rbq|RBQ|憨批|废物|死妈|崽种|傻逼|没用东西|傻B|傻b|SB|sb|煞笔|nm|爬|爪巴|kkp|dm|D区|口区|你爹|弱智|NM|你妈|清明|🐎|🐴|傻子|奥利给|奥力给|💩|nt|NT).*')
+async def ban_word(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rex = re.compile(r'臭鼬|猫猫|凯露')
     m = rex.search(arg)
     if m:
-        ctx = session.ctx
-        user_id = ctx['user_id']
+        user_id = ev.user_id
         msg_from = str(user_id)
-        if ctx['message_type'] == 'group':
-            msg_from += f'@[群:{ctx["group_id"]}]'
-        elif ctx['message_type'] == 'discuss':
-            msg_from += f'@[讨论组:{ctx["discuss_id"]}]'
-        hoshino.logger.critical(f'Self: {ctx["self_id"]}, Message {ctx["message_id"]} from {msg_from}: {ctx["message"]}')
-        await session.send(random.choice(REBEAT_WORD))
+        if ev.message_type == 'group':
+            msg_from += f'@[群:{ev.group_id}]'
+        elif ev.message_type == 'discuss':
+            msg_from += f'@[讨论组:{ev.discuss_id}]'
+        hoshino.logger.critical(f'Self: {ev.self_id}, Message {ev.message_id} from {msg_from}: {ev.message}')
+        await bot.send(ev, random.choice(REBEAT_WORD))
         priv.set_block_user(user_id, timedelta(hours=0.01))
     # pic = R.img(f"chieri{random.randint(1, 4)}.jpg").cqcode
     # await session.send(f"不理你啦！バーカー\n{pic}", at_sender=True)
-        await util.silence(session.ctx, 60)
+        await util.silence(ev, 60)
 	
-@on_natural_language(keywords={'剑', '🤺'}, only_to_me=False)
-async def ban_jian(session:NLPSession):
-    arg = session.msg_text.strip()
-    rexs = re.compile(r'.*(臭鼬|凯露|猫猫).*')
+@sv.on_rex(r'.*(剑|🤺).*')
+async def ban_jian(bot, ev: CQEvent):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|猫猫')
     ms = rexs.search(arg)
     if ms:
-        ctx = session.ctx
-        user_id = ctx['user_id']
+        user_id = ev.user_id
         msg_from = str(user_id)
-        if ctx['message_type'] == 'group':
-            msg_from += f'@[群:{ctx["group_id"]}]'
-        elif ctx['message_type'] == 'discuss':
-            msg_from += f'@[讨论组:{ctx["discuss_id"]}]'
-        hoshino.logger.critical(f'Self: {ctx["self_id"]}, Message {ctx["message_id"]} from {msg_from}: {ctx["message"]}')
-        await session.send(random.choice(JIAN_WORD))
+        if ev.message_type == 'group':
+            msg_from += f'@[群:{ev.group_id}]'
+        elif ev.message_type == 'discuss':
+            msg_from += f'@[讨论组:{ev.discuss_id}]'
+        hoshino.logger.critical(f'Self: {ev.self_id}, Message {ev.message_id} from {msg_from}: {ev.message}')
+        await bot.send(ev, random.choice(JIAN_WORD))
         priv.set_block_user(user_id, timedelta(hours=0.01))
     # pic = R.img(f"chieri{random.randint(1, 4)}.jpg").cqcode
     # await session.send(f"不理你啦！バーカー\n{pic}", at_sender=True)
-        await util.silence(session.ctx, 60)
+        await util.silence(ev, 60)
