@@ -158,9 +158,9 @@ async def batch_add_member(bot:NoneBot, ctx:Context_T, args:ParseResult):
     try:
         mlist = await bot.get_group_member_list(self_id=ctx['self_id'], group_id=bm.group)
     except ActionFailed:
-        raise ClanBattleError('Bot缓存未更新，暂时无法使用一键入会。请尝试【!入会】命令逐个添加')
+        raise ClanBattleError('キャル缓存未更新，暂时无法使用一键入会。请尝试【!入会】命令逐个添加')
     if len(mlist) > 50:
-        raise ClanBattleError('群员过多！一键入会仅限50人以内群使用')
+        raise ClanBattleError('群员过多！一键入会仅限50人以内群使用嗷')
 
     self_id = ctx['self_id']
     succ, fail = 0, 0
@@ -171,7 +171,7 @@ async def batch_add_member(bot:NoneBot, ctx:Context_T, args:ParseResult):
                 succ += 1
             except DatabaseError:
                 fail += 1
-    msg = f'批量注册完成！成功{succ}/失败{fail}\n使用【{USAGE_LIST_MEMBER}】查看当前成员列表'
+    msg = f'就这？批量注册完成嗷，成功{succ}/失败{fail}\n使用【{USAGE_LIST_MEMBER}】查看当前成员列表'
     await bot.send(ctx, msg, at_sender=True)
 
 
@@ -196,7 +196,7 @@ async def process_challenge(bot:NoneBot, ctx:Context_T, ch:ParseResult):
     flag = ch.flag
 
     if (ch.flag == BattleMaster.LAST) and (ch.round or ch.boss) and (not damage):
-        raise NotFoundError('补报尾刀请给出伤害值')     # 补报尾刀必须给出伤害值
+        raise NotFoundError('补报尾刀请给出伤害值，懂？')     # 补报尾刀必须给出伤害值
 
     msg = ['']
     if round_ != cur_round or boss != cur_boss:
@@ -437,14 +437,14 @@ async def subscribe(bot:NoneBot, ctx:Context_T, args:ParseResult):
     mlist = sub.get_memo_list(boss)
     limit = sub.get_sub_limit(boss)
     if uid in slist:
-        raise AlreadyExistError(f'您已经预约过{boss_name}王了')
+        raise AlreadyExistError(f'啊这，您已经预约过{boss_name}王了')
     msg = ['']
     if len(slist) < limit:
         sub.add_sub(boss, uid, memo)
         _save_sub(sub, bm.group)
         msg.append(f'已为您预约{boss_name}王！')
     else:
-        msg.append(f'预约失败：{boss_name}王预约人数已达上限')
+        msg.append(f'芜湖，预约失败：{boss_name}王预约人数已达上限')
     msg.append(f'=== 当前队列 {len(slist)}/{limit} ===')
     msg.extend(_gen_namelist_text(bm, slist, mlist))
     msg.append(SUBSCRIBE_TIP)
@@ -468,7 +468,7 @@ async def unsubscribe(bot:NoneBot, ctx:Context_T, args:ParseResult):
         raise NotFoundError(f'您没有预约{boss_name}王')
     sub.remove_sub(boss, uid)
     _save_sub(sub, bm.group)
-    msg = [ f'\n已为您取消预约{boss_name}王！' ]
+    msg = [ f'\n已为您取消预约{boss_name}王辣！' ]
     msg.append(f'=== 当前队列 {len(slist)}/{limit} ===')    
     msg.extend(_gen_namelist_text(bm, slist, mlist))
     await bot.send(ctx, '\n'.join(msg), at_sender=True)
@@ -492,12 +492,12 @@ async def call_subscribe(bot:NoneBot, ctx:Context_T, round_:int, boss:int):
     mlist = sub.get_memo_list(boss)
     tlist = sub.get_tree_list()
     if slist:
-        msg.append(f"您们预约的老{BattleMaster.int2kanji(boss)}出现啦！")
+        msg.append(f"大佬你们预约的老{BattleMaster.int2kanji(boss)}出现啦！")
         msg.extend(_gen_namelist_text(bm, slist, mlist, do_at=True))
     if slist and tlist:
         msg.append("==========")
     if tlist:
-        msg.append(f"以下成员可以下树了")
+        msg.append(f"以下成员可以下树了（爬")
         msg.extend(map(lambda x: str(ms.at(x)), tlist))
         sub.clear_tree()
         _save_sub(sub, bm.group)
@@ -568,7 +568,7 @@ async def add_sos(bot:NoneBot, ctx:Context_T, args:ParseResult):
         raise AlreadyExistError("您已在树上")
     sub.add_tree(uid)
     _save_sub(sub, bm.group)
-    msg = [ "\n您已上树，本Boss被击败时将会通知您",
+    msg = [ "\n这位dd您已上树，本Boss被击败时将会通知您",
            f"目前{clan['name']}挂树人数为{len(tree)}人：" ]
     msg.extend(_gen_namelist_text(bm, tree))
     await bot.send(ctx, '\n'.join(msg), at_sender=True)
@@ -777,7 +777,7 @@ async def _do_show_remain(bot:NoneBot, ctx:Context_T, args:ParseResult, at_user:
     bm = BattleMaster(ctx['group_id'])
     clan = _check_clan(bm)
     if at_user:
-        _check_admin(ctx, '才能催刀。您可以用【!查刀】查询余刀')
+        _check_admin(ctx, '才能催刀，而您不配。您可以用【!查刀】查询余刀')
     rlist = bm.list_challenge_remain(1, datetime.now())
     rlist.sort(key=lambda x: x[3] + x[4], reverse=True)
     msg = [ f"\n{clan['name']}今日余刀：" ]
@@ -789,7 +789,7 @@ async def _do_show_remain(bot:NoneBot, ctx:Context_T, args:ParseResult, at_user:
     else:
         msg.append('若有负数说明报刀有误 请注意核对\n使用“!出刀记录 @qq”可查看详细记录')
         if at_user:
-            msg.append("=========\n在？阿sir喊你出刀啦！")
+            msg.append("=========\n在？キャル跟主人喊你出刀啦！")
         await bot.send(ctx, '\n'.join(msg), at_sender=True)
 
 
@@ -824,3 +824,59 @@ async def list_challenge(bot:NoneBot, ctx:Context_T, args:ParseResult):
         c['flag_str'] = '|补时' if flag & bm.EXT else '|尾刀' if flag & bm.LAST else '|掉线' if flag & bm.TIMEOUT else '|通常'
         msg.append(challenstr.format_map(c))
     await bot.send(ctx, '\n'.join(msg))
+
+async def _do_show_rankn(bot:NoneBot, ctx:Context_T, args:ParseResult):
+    import json, requests
+    url = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com/name/-1'
+    name = args.name
+    data = json.dumps({'clanName': name})
+    headers = {'Content-Type': 'application/json'}
+    resp = requests.post(url, data=data, headers=headers)
+    if resp.status_code == requests.codes.ok:
+        resp_data = json.loads(resp.text)
+        if not resp_data['data']:
+            await bot.send(ctx, '未找到该行会', at_sender=True)
+            return
+        msg = ['\n']
+        for data in resp_data['data']:
+            msg.append(
+                f'{data["clan_name"]} 共{data["member_num"]}人:\n会长：{data["leader_name"]} | 当前第{data["rank"]}名 | 总伤害：{data["damage"]}')
+        await bot.send(ctx, '\n'.join(msg), at_sender=True)
+    else:
+        await bot.send(ctx, '查询出错，请稍后重试', at_sender=True)
+
+async def _do_show_rankl(bot:NoneBot, ctx:Context_T, args:ParseResult):
+    import json, requests
+    url = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com/leader/0'
+    name = args.name
+    data = json.dumps({'leaderName': name})
+    headers = {'Content-Type': 'application/json'}
+    resp = requests.post(url, data=data, headers=headers)
+    if resp.status_code == requests.codes.ok:
+        resp_data = json.loads(resp.text)
+        if not resp_data['data']:
+            await bot.send(ctx, '未找到该行会', at_sender=True)
+            return
+        msg = ['\n']
+        for data in resp_data['data']:
+            msg.append(
+                f'{data["clan_name"]} 共{data["member_num"]}人:\n会长：{data["leader_name"]} | 当前第{data["rank"]}名 | 总伤害：{data["damage"]}')
+        await bot.send(ctx, '\n'.join(msg), at_sender=True)
+    else:
+        await bot.send(ctx, '查询出错，请稍后重试', at_sender=True)
+
+@cb_cmd(
+    ('排名公会', '查询排名公会'),
+    ArgParser(usage='!排名 <公会名>',
+    arg_dict={'': ArgHolder(tip='公会名', type=str, default='自强不息')}))
+async def list_remain(bot:NoneBot, ctx:Context_T, args:ParseResult):
+    data = ParseResult({'name': args.get('')})
+    await _do_show_rankn(bot, ctx, data)
+
+@cb_cmd(
+    ('排名会长', '查询排名会长'),
+    ArgParser(usage='!排名 <会长名>',
+    arg_dict={'': ArgHolder(tip='公会会长名', type=str, default='墨染朱璃鶸')}))
+async def list_remain(bot:NoneBot, ctx:Context_T, args:ParseResult):
+    data = ParseResult({'name': args.get('')})
+    await _do_show_rankl(bot, ctx, data)

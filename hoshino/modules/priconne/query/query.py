@@ -112,7 +112,7 @@ POSITION_SHEET = f'''
 ※图片搬运自pcredivewiki_tw'''
 @sv.on_fullmatch(POSITION_SHEET_ALIAS)
 async def position_sheet(bot, ev):
-    await bot.send(POSITION_SHEET, at_sender=True)
+    await bot.send(ev, POSITION_SHEET, at_sender=True)
     #await util.silence(ev, 60)
 
 DRAGON_TOOL = f'''

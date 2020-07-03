@@ -44,55 +44,62 @@ def get_setuT():
 
 
 
-@sv.on_rex(r'^(?!.*铜).*(臭鼬|凯露|bot|キャル|猫猫).*(不够[涩瑟色sS]|[涩瑟色sS][图t]|来一?[点份张].*[涩瑟色sS]|再来[点份张]|看过了|kgl|gkd|GKD|有无[涩瑟色sS]图|有无setu|有无st)')
+@sv.on_rex(r'.*(够[涩瑟色sS]|[涩瑟色sS][图t]|再来[点份张]|看过了|kgl|gkd|GKD|有无setu).*')
 async def setu(bot, ev):
     """随机叫一份涩图，对每个用户有冷却时间"""
-    uid = ev['user_id']
-    if not _nlmt.check(uid):
-        await bot.send(ev, EXCEED_NOTICE, at_sender=True)
-        return
-    if not _flmt.check(uid):
-        await bot.send(ev, '宁冲得太快了，请先攒点再冲', at_sender=True)
-        return
-    _flmt.start_cd(uid)
-    _nlmt.increase(uid)
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'^(?!.*铜).*(臭鼬|凯露|bot|キャル|猫猫).*')
+    ms = rexs.search(arg)
+    if ms:
+        uid = ev.user_id
+        if not _nlmt.check(uid):
+            await bot.send(ev, EXCEED_NOTICE, at_sender=True)
+            return
+        if not _flmt.check(uid):
+            await bot.send(ev, '宁冲得太快了，请先攒点再冲', at_sender=True)
+            return
+        _flmt.start_cd(uid)
+        _nlmt.increase(uid)
 
-    # conditions all ok, send a setu.
-    pic = get_setu()
+        # conditions all ok, send a setu.
+        pic = get_setu()
 
-    try:
-        await bot.send(ev, pic.cqcode)
-    except CQHttpError:
-        sv.logger.error(f"发送图片{pic.path}失败")
         try:
-            await bot.send(ev, '涩图太涩，发不出去力...')
-        except:
-            pass
+            await bot.send(ev, pic.cqcode)
+        except CQHttpError:
+            sv.logger.error(f"发送图片{pic.path}失败")
+            try:
+                await bot.send(ev, '涩图太涩，发不出去力...')
+            except:
+                pass
 
 
-@sv.on_rex(r'(.*铜.*)(臭鼬|凯露|bot|キャル|猫猫)(.*)|(.*)(臭鼬|凯露|bot|キャル|猫猫)(.*铜.*)')
-async def setu(bot, ev):
-   """随机叫一份涩图，对每个用户有冷却时间"""
-   uid = ev['user_id']    
-   if not _nlmt.check(uid):
-       await bot.send(ev, EXCEED_NOTICE, at_sender=True)
-       return
-   if not _flmt.check(uid):
-       await bot.send(ev, '宁冲得太快了，请先攒点再冲', at_sender=True)
-       return
-   _flmt.start_cd(uid)
-   _nlmt.increase(uid)
+@sv.on_rex(r'.*铜.*')
+async def setut(bot, ev):
+    arg = str(ev.raw_message)
+    rexs = re.compile(r'臭鼬|凯露|bot|キャル|猫猫')
+    ms = rexs.search(arg)
+    if ms:
+        uid = ev.user_id
+        if not _nlmt.check(uid):
+            await bot.send(ev, EXCEED_NOTICE, at_sender=True)
+            return
+        if not _flmt.check(uid):
+            await bot.send(ev, '宁冲得太快了，请先攒点再冲', at_sender=True)
+            return
+        _flmt.start_cd(uid)
+        _nlmt.increase(uid)
 
-   picT = get_setuT()
+        picT = get_setuT()
 
-   try:
-       await bot.send(ev, picT.cqcode)
-   except CQHttpError:
-       sv.logger.error(f"发送图片{picT.path}失败")
-       try:
-           await bot.send(ev, '炼得太纯，进局子里力...')
-       except:
-           pass
+        try:
+            await bot.send(ev, picT.cqcode)
+        except CQHttpError:
+            sv.logger.error(f"发送图片{picT.path}失败")
+            try:
+                await bot.send(ev, '炼得太纯，进局子里力...')
+            except:
+                pass
 
 setu_help = f'''
 ======================

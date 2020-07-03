@@ -12,7 +12,7 @@ TOP_MANUAL = '''
 ※功能采取模块化管理，群管理可控制开关
 ※部分功能必须手动at本bot才会触发(复制无效)
 
-[!帮助] 会战管理功能说明
+[!帮助] 会战管理v2
 [怎么拆日和] 竞技场查询
 [凯露单抽/十连/来一井] 转蛋模拟
 [.(或。)ub角色名称]角色ub语音
@@ -23,6 +23,7 @@ TOP_MANUAL = '''
 [来杯咖啡] 联系维护组
 
 发送以下关键词查看更多：
+[帮助pcr会战]
 [帮助pcr查询]
 [帮助pcr娱乐]
 [帮助pcr订阅]
@@ -34,7 +35,6 @@ TOP_MANUAL = '''
 ※您的支持是本bot更新维护的动力
 ※※调教时请注意使用频率，您的滥用可能会导致bot账号被封禁
 '''.strip()
-
 
 def gen_bundle_manual(bundle_name, service_list, gid):
     manual = [bundle_name]
@@ -57,4 +57,4 @@ async def send_help(bot, ev: CQEvent):
     elif bundle_name in bundles:
         msg = gen_bundle_manual(bundle_name, bundles[bundle_name], ev.group_id)
         await bot.send(ev, msg)
-        #else: ignore
+    # else: ignore

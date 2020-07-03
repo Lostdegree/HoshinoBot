@@ -5,6 +5,7 @@ svtw = Service('pcr-arena-reminder-tw', enable_on_default=False, help_='背刺�
 svjp = Service('pcr-arena-reminder-jp', enable_on_default=False, help_='背刺时间提醒(日)', bundle='pcr订阅')
 msg = f'骑士君、准备好背刺了吗？\n{R.img("beichi.jpg").cqcode}'
 
+
 @svtw.scheduled_job('cron', hour='14', minute='50')
 async def pcr_reminder_tw():
     await svtw.broadcast(msg, 'pcr-reminder-tw', 0.2)

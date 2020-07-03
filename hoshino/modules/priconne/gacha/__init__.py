@@ -59,10 +59,10 @@ async def gacha_info(bot, ev: CQEvent):
         up_chara = map(lambda x: str(
             chara.fromname(x, star=3).icon.cqcode) + x, up_chara)
     up_chara = '\n'.join(up_chara)
-    await bot.send(ev, f"本期卡池主打的角色：\n{up_chara}\nUP角色合计={(gacha.up_prob/10):.1f}% 3★出率={(gacha.s3_prob)/10:.1f}%\n{SWITCH_POOL_TIP}")
+    await bot.send(ev, f"本期卡池主打的角色：\n{up_chara}\nUP角色合计={(gacha.up_prob/10):.1f}% 3★出率={(gacha.s3_prob)/10:.1f}%")
 
 
-POOL_NAME_TIP = '请选择以下卡池\n> 选择卡池jp\n> 选择卡池tw\n> 选择卡池bilibili\n> 选择卡池mix'
+POOL_NAME_TIP = '请选择以下卡池\n> 切换卡池jp\n> 切换卡池tw\n> 切换卡池b\n> 切换卡池mix'
 @sv.on_prefix(('切换卡池', '选择卡池', '切換卡池', '選擇卡池'))
 async def set_pool(bot, ev: CQEvent):
     if not priv.check_priv(ev, priv.ADMIN):
@@ -109,7 +109,7 @@ async def check_tenjo_num(bot, ev: CQEvent):
 @sv.on_rex(r'.*(宝石|石头).*')
 async def gacha_st(bot, ev: CQEvent):
 
-    arg = str(ev.plain_text)
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
@@ -120,7 +120,7 @@ async def gacha_st(bot, ev: CQEvent):
 @sv.on_rex(r'.*抽签.*')
 async def gacha_d(bot, ev: CQEvent):
 
-    arg = str(ev.plain_text)
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
@@ -143,7 +143,7 @@ async def gacha_d(bot, ev: CQEvent):
 @sv.on_rex(r'^(?!.*(十|10|井)).*(来|抽).*(一|1).*(发|抽)|.*单.*(发|抽)')
 async def gacha_1(bot, ev: CQEvent):
 
-    arg = str(ev.plain_text)
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
@@ -162,14 +162,14 @@ async def gacha_1(bot, ev: CQEvent):
         if sv.bot.config.USE_CQPRO:
             res = f'{chara.icon.cqcode} {res}'
 
-        #await silence(session.ctx, silence_time)
+        #await silence(ev, silence_time)
         await bot.send(ev, f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
 
 
 @sv.on_rex(r'.*(十|10)(次|发|抽|连|下|連).*')
 async def gacha_10(bot, ev: CQEvent):
 
-    arg = str(ev.plain_text)
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
@@ -202,6 +202,11 @@ async def gacha_10(bot, ev: CQEvent):
             res2 = ' '.join(result[5:])
             res = f'{res1}\n{res2}'
 
+
+
+
+
+
         if hiishi >= SUPER_LUCKY_LINE:
             await bot.send(ev, '恭喜海豹！おめでとうございます！')
         await bot.send(ev, f'素敵な仲間が増えますよ！\n{res}\n{SWITCH_POOL_TIP}\n※发送“凯露宝石”可以查看还剩多少宝石', at_sender=True)
@@ -209,10 +214,11 @@ async def gacha_10(bot, ev: CQEvent):
 
 
 
+
 @sv.on_rex(r'.*(来|抽).*井.*')
 async def gacha_300(bot, ev: CQEvent):
 
-    arg = str(ev.plain_text)
+    arg = str(ev.raw_message)
     rex = re.compile(r'.*(臭鼬|猫猫|凯露).*')
     m = rex.search(arg)
     if m:
@@ -278,7 +284,6 @@ async def gacha_300(bot, ev: CQEvent):
         await bot.send(ev, '\n'.join(msg), at_sender=True)
         silence_time = (10*up + s2)
         await silence(ev, silence_time)
-
 
 
 @sv.on_prefix('氪金')

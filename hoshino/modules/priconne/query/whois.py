@@ -24,19 +24,21 @@ async def whois(bot, ev: CQEvent):
         return
     id_ = chara.name2id(name)
     confi = 100
+    guess = False
     if id_ == chara.UNKNOWN:
         id_, guess_name, confi = chara.guess_id(name)
+        guess = True
     c = chara.fromid(id_)
     
     msg = ''
-    if confi < 100:
-        lmt.start_cd(uid, 120)
+    if guess:
+        lmt.start_cd(uid, 60)
         msg = f'兰德索尔似乎没有叫"{name}"的人...\n角色别称补全计划: github.com/Ice-Cirno/HoshinoBot/issues/5'
         await bot.send(ev, msg)
         msg = f'\n您有{confi}%的可能在找{guess_name} '
 
     if confi > 60:
-        msg += f'{c.icon.cqcode} {c.name}'        
+        msg += f'{c.icon.cqcode} {c.name}'
         await bot.send(ev, msg, at_sender=True)
 
 
@@ -55,12 +57,14 @@ async def ubrec(bot, ev: CQEvent):
         return
     id_ = chara.name2id(name)
     confi = 100
+    guess = False
     if id_ == chara.UNKNOWN:
         id_, guess_name, confi = chara.guess_id(name)
+        guess = True
     c = chara.fromid(id_)
     
     msg = ''
-    if confi < 100:
+    if guess:
         lmt.start_cd(uid, 60)
         msg = f'兰德索尔似乎没有叫"{name}"的人...\n角色别称补全计划: github.com/Ice-Cirno/HoshinoBot/issues/5 \n您有{confi}%的可能在找{guess_name} '
         await bot.send(ev, msg)

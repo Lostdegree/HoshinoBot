@@ -5,6 +5,7 @@ import random
 from nonebot import on_command
 
 from hoshino import R, Service, priv, util
+
 from hoshino.typing import *
 
 # basic function for debug, not included in Service('chat')
@@ -243,7 +244,7 @@ async def n_bu(bot, ev: CQEvent):
             await bot.send(ev, '天天不不不，让你去真不王国好了（', at_sender=True)
 	
 @sv.on_rex(r'.*催刀.*')
-async def n_suo(bot, ev: CQEvent):
+async def n_cuidao(bot, ev: CQEvent):
     arg = str(ev.raw_message)
     rex = re.compile(r'.*(无效|不许|不准).*')
     m = rex.search(arg)
