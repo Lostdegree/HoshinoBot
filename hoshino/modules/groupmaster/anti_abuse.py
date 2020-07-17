@@ -86,7 +86,7 @@ REBEAT_WORD = (
 
 JIAN_WORD = ('宁有剑吗？', f'哦，那💉💧🐮🍺\n{R.img("jian.jpg").cqcode}')
 
-@sv.on_rex(r'.*(rbq|RBQ|憨批|废物|死妈|崽种|傻逼|没用东西|傻B|傻b|SB|sb|煞笔|nm|爬|爪巴|kkp|dm|D区|口区|你爹|弱智|NM|你妈|清明|🐎|🐴|傻子|奥利给|奥力给|💩|nt|NT).*')
+@sv.on_rex(r'.*(衮|rbq|RBQ|憨批|废物|死妈|崽种|傻逼|没用东西|傻B|傻b|SB|sb|煞笔|nm|爬|爪巴|kkp|dm|D区|口区|你爹|弱智|NM|你妈|清明|🐎|🐴|傻子|奥利给|奥力给|💩|nt|NT).*')
 async def ban_word(bot, ev: CQEvent):
     arg = str(ev.raw_message)
     rex = re.compile(r'臭鼬|猫猫|凯露')

@@ -5,7 +5,7 @@ import re
 from nonebot.exceptions import CQHttpError
 
 from hoshino import R, Service, priv
-from hoshino.util import FreqLimiter, DailyNumberLimiter
+from hoshino.util import FreqLimiter, DailyNumberLimiter, silence
 
 _max = 5
 EXCEED_NOTICE = f'您今天已经冲过{_max}次了，请明早5点后再来！'
@@ -66,6 +66,7 @@ async def setu(bot, ev):
 
         try:
             await bot.send(ev, pic.cqcode)
+            await silence(ev, 60)
         except CQHttpError:
             sv.logger.error(f"发送图片{pic.path}失败")
             try:
@@ -94,6 +95,7 @@ async def setut(bot, ev):
 
         try:
             await bot.send(ev, picT.cqcode)
+            await silence(ev, 60)
         except CQHttpError:
             sv.logger.error(f"发送图片{picT.path}失败")
             try:

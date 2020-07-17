@@ -1,7 +1,7 @@
 from hoshino.typing import CQEvent, MessageSegment
 from hoshino.util import FreqLimiter
 
-from .. import chara
+from hoshino.modules.priconne import chara
 from . import sv
 from hoshino import R
 import os
@@ -70,7 +70,7 @@ async def ubrec(bot, ev: CQEvent):
         await bot.send(ev, msg)
         #msg = f'\n您有{confi}%的可能在找{guess_name} '
 
-    if confi > 60 and os.path.isfile(f'E:/1data/1data/res/img/priconne/rec/rec_unit_{id_}_ub.mp3'):
+    if confi > 60 and R.rec(f'priconne/rec/rec_unit_{id_}_ub.mp3').exist:
         msg = R.rec(f'priconne/rec/rec_unit_{id_}_ub.mp3').cqcode        
         await bot.send(ev, msg, at_sender=False)
 

@@ -64,6 +64,8 @@ def cb_cmd(name, parser:ArgParser) -> Callable:
 
 from .cmdv2 import *
 
+from .cmdquery import *
+
 
 QUICK_START = f'''
 ======================

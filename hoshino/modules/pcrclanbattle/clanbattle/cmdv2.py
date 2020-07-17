@@ -17,7 +17,6 @@ try:
     import ujson as json
 except:
     import json
-
 from aiocqhttp.exceptions import ActionFailed
 from nonebot import NoneBot
 from nonebot import MessageSegment as ms
@@ -824,59 +823,3 @@ async def list_challenge(bot:NoneBot, ctx:Context_T, args:ParseResult):
         c['flag_str'] = '|补时' if flag & bm.EXT else '|尾刀' if flag & bm.LAST else '|掉线' if flag & bm.TIMEOUT else '|通常'
         msg.append(challenstr.format_map(c))
     await bot.send(ctx, '\n'.join(msg))
-
-async def _do_show_rankn(bot:NoneBot, ctx:Context_T, args:ParseResult):
-    import json, requests
-    url = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com/name/-1'
-    name = args.name
-    data = json.dumps({'clanName': name})
-    headers = {'Content-Type': 'application/json'}
-    resp = requests.post(url, data=data, headers=headers)
-    if resp.status_code == requests.codes.ok:
-        resp_data = json.loads(resp.text)
-        if not resp_data['data']:
-            await bot.send(ctx, '未找到该行会', at_sender=True)
-            return
-        msg = ['\n']
-        for data in resp_data['data']:
-            msg.append(
-                f'{data["clan_name"]} 共{data["member_num"]}人:\n会长：{data["leader_name"]} | 当前第{data["rank"]}名 | 总伤害：{data["damage"]}')
-        await bot.send(ctx, '\n'.join(msg), at_sender=True)
-    else:
-        await bot.send(ctx, '查询出错，请稍后重试', at_sender=True)
-
-async def _do_show_rankl(bot:NoneBot, ctx:Context_T, args:ParseResult):
-    import json, requests
-    url = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com/leader/0'
-    name = args.name
-    data = json.dumps({'leaderName': name})
-    headers = {'Content-Type': 'application/json'}
-    resp = requests.post(url, data=data, headers=headers)
-    if resp.status_code == requests.codes.ok:
-        resp_data = json.loads(resp.text)
-        if not resp_data['data']:
-            await bot.send(ctx, '未找到该行会', at_sender=True)
-            return
-        msg = ['\n']
-        for data in resp_data['data']:
-            msg.append(
-                f'{data["clan_name"]} 共{data["member_num"]}人:\n会长：{data["leader_name"]} | 当前第{data["rank"]}名 | 总伤害：{data["damage"]}')
-        await bot.send(ctx, '\n'.join(msg), at_sender=True)
-    else:
-        await bot.send(ctx, '查询出错，请稍后重试', at_sender=True)
-
-@cb_cmd(
-    ('排名公会', '查询排名公会'),
-    ArgParser(usage='!排名 <公会名>',
-    arg_dict={'': ArgHolder(tip='公会名', type=str, default='自强不息')}))
-async def list_remain(bot:NoneBot, ctx:Context_T, args:ParseResult):
-    data = ParseResult({'name': args.get('')})
-    await _do_show_rankn(bot, ctx, data)
-
-@cb_cmd(
-    ('排名会长', '查询排名会长'),
-    ArgParser(usage='!排名 <会长名>',
-    arg_dict={'': ArgHolder(tip='公会会长名', type=str, default='墨染朱璃鶸')}))
-async def list_remain(bot:NoneBot, ctx:Context_T, args:ParseResult):
-    data = ParseResult({'name': args.get('')})
-    await _do_show_rankl(bot, ctx, data)
