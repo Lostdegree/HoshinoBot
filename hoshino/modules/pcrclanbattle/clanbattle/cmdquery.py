@@ -27,31 +27,6 @@ from .exception import *
 plt.style.use('seaborn-pastel')
 plt.rcParams['font.family'] = ['DejaVuSans', 'Microsoft YaHei', 'SimSun', ]
 
-#url = 'https://service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com/name/0'
-#data = json.dumps({'clanName': '强'})
-#headers = {
-#    "Content-Type": "application/json",
-#    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
-#    "Connection": "keep-alive",
-#    "Content-Length": "39",
-#    "Origin": "https://kengxxiao.github.io",
-#    "Referer": "https://kengxxiao.github.io/Kyouka/",
-#    "Host": "service-kjcbcnmw-1254119946.gz.apigw.tencentcs.com"
-#    }
-#resp = requests.post(url, data=data, headers=headers)
-#print(resp.text)
-#if resp.status_code == 200:
-#    print(f'{resp.text}')
-#    resp_data = json.loads(resp.text)
-#    if not resp_data['data']:
-#        print('E1')
-#    msg = ['\n']
-#    for data in resp_data['data']:
-#        msg.append(
-#            f'{data["clan_name"]} 共{data["member_num"]}人:\n会长：{data["leader_name"]} | 当前第{data["rank"]}名 | 总伤害：{data["damage"]}')
-#    print('\n'.join(msg))
-#else:
-#    print(f'err{resp.status_code}')
 
 
 async def _do_show_rankn(bot:NoneBot, ctx:Context_T, args:ParseResult):

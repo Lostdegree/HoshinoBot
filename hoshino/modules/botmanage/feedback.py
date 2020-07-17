@@ -14,7 +14,7 @@ async def feedback(bot, ev: CQEvent):
     uid = ev.user_id
     if not lmt.check(uid):
         await bot.finish(EXCEED_NOTICE, at_sender=True)
-    coffee = 2435994901
+    coffee = hoshino.config.SUPERUSER[0]
     text = str(ev.message).strip()
     if not text:
         await bot.send(ev, f"请发送来杯咖啡+您要反馈的内容~", at_sender=True)

@@ -280,8 +280,7 @@ async def gacha_300(bot, ev: CQEvent):
             msg.append("记忆碎片一大堆！您是托吧？")
         msg.append(SWITCH_POOL_TIP)
 
-        if uid == 3106316068:
-            await bot.send(ev, 'emmmm由衣今天又偷懒了啊~', at_sender=False)
+
 
         await bot.send(ev, '\n'.join(msg), at_sender=True)
         silence_time = (10*up + s2)
